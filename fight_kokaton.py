@@ -155,6 +155,17 @@ class Score: #課題1
         self.rct = self.img.get_rect(center=(100, HEIGHT - 50))
         screen.blit(self.img, self.rct)
 
+class Explosion: #課題3
+    def __init__(self, bomb):
+        img = pg.image.load("fig/explosion.gif").convert_alpha()
+        self.imgs = [img, pg.transform.flip(img, True, True)]
+        self.rct = img.get_rect(center=bomb.rct.center)
+        self.life = 30   
+
+    def update(self, screen):
+        self.life -= 1
+        if self.life > 0:
+            screen.blit(self.imgs[(self.life // 4) % 2], self.rct)
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -165,11 +176,13 @@ def main():
 
     #練習5
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
-    #課題インスタンス
+    #課題1
     score = Score()
 
     #課題2
     multibeams = []
+
+    explosions = []
     #beam = None  # ゲーム初期化時にはビームは存在しない（スペースキーが押されたときに生成）
     clock = pg.time.Clock()
     tmr = 0
@@ -209,16 +222,19 @@ def main():
         #             #課題1
         #             score.score += 1
         #             bird.change_img(6, screen)
-        #演習2
+        #課題2
 
         for i, bomb in enumerate(bombs):
             for j, beam in enumerate(multibeams):
                 if beam is not None and beam.rct.colliderect(bomb.rct):
+                    
+                    explosions.append(Explosion(bomb))#課題3
+                    
                     multibeams[j] = None
                     bombs[i] = None
                     score.score += 1
                     bird.change_img(6, screen)
-                    break
+                    
 
         bombs = [bomb for bomb in bombs if bomb is not None]
         multibeams = [beam for beam in multibeams if beam is not None]
@@ -230,10 +246,15 @@ def main():
 
         bombs = [bomb for bomb in bombs if bomb is not None]
 
+        #課題3
+        explosions = [explosion for explosion in explosions if explosion.life > 0]
+        for explosion in explosions:
+            explosion.update(screen)
+
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
 
-        #演習1 
+        #課題1 
         score.update(screen)
 
         for beam in multibeams:
