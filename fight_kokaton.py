@@ -167,7 +167,10 @@ def main():
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
     #課題インスタンス
     score = Score()
-    beam = None  # ゲーム初期化時にはビームは存在しない（スペースキーが押されたときに生成）
+
+    #課題2
+    multibeams = []
+    #beam = None  # ゲーム初期化時にはビームは存在しない（スペースキーが押されたときに生成）
     clock = pg.time.Clock()
     tmr = 0
 
@@ -177,7 +180,10 @@ def main():
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
-                beam = Beam(bird)            
+                #beam = Beam(bird)  
+                # 課題2
+                multibeams.append(Beam(bird))
+
         screen.blit(bg_img, [0, 0])
 
         for bomb in bombs: #練習5
@@ -194,17 +200,34 @@ def main():
                 time.sleep(1)
                 return
             
-        #練習5
-        for i, bomb in enumerate(bombs):
-            if beam is not None:
-                if beam.rct.colliderect(bomb.rct):
-                    beam = None
-                    bombs[i] = None
-                    #課題1
-                    score.score += 1
+        #練習5 
+        # for i, bomb in enumerate(bombs):
+        #     if beam is not None:
+        #         if beam.rct.colliderect(bomb.rct):
+        #             beam = None
+        #             bombs[i] = None
+        #             #課題1
+        #             score.score += 1
+        #             bird.change_img(6, screen)
+        #演習2
 
+        for i, bomb in enumerate(bombs):
+            for j, beam in enumerate(multibeams):
+                if beam is not None and beam.rct.colliderect(bomb.rct):
+                    multibeams[j] = None
+                    bombs[i] = None
+                    score.score += 1
                     bird.change_img(6, screen)
-                    pg.display.update()
+                    break
+
+        bombs = [bomb for bomb in bombs if bomb is not None]
+        multibeams = [beam for beam in multibeams if beam is not None]
+
+        for beam in multibeams:
+            beam.update(screen)
+
+        multibeams = [beam for beam in multibeams if check_bound(beam.rct) == (True, True)]
+
         bombs = [bomb for bomb in bombs if bomb is not None]
 
         key_lst = pg.key.get_pressed()
@@ -213,7 +236,7 @@ def main():
         #演習1 
         score.update(screen)
 
-        if beam is not None: 
+        for beam in multibeams:
             beam.update(screen)
         for bomb in bombs:    
             bomb.update(screen)
