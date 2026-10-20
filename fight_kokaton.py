@@ -95,7 +95,7 @@ class Beam:
         """
         img0 = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
         self.img = pg.image.load(f"fig/beam.png")
-        self.rct = self.img.get_rct()
+        self.rct = self.img.get_rect()
         self.rct.centery = bird.rct.centery #ビームの中心縦座標 = こうかとんの中心縦座標
         self.rct.left = bird.rct.right #こうかとんの右座標
         self.vx, self.vy = +5, 0
@@ -159,16 +159,24 @@ def main():
                 beam = Beam(bird)            
         screen.blit(bg_img, [0, 0])
         
-        if bird.rct.colliderect(bomb.rct):
-            # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
-            bird.change_img(8, screen)
-            pg.display.update()
-            time.sleep(1)
-            return
+        if bomb is not None:
+            if bird.rct.colliderect(bomb.rct):
+                # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
+                bird.change_img(8, screen)
+                pg.display.update()
+                time.sleep(1)
+                return
+
+        if bomb is not None:
+            if beam is not None:
+                if beam.rct.colliderect(bomb.rct):
+                    beam == None
+                    bomb == None
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-        beam.update(screen)   
+        if beam is not None: 
+            beam.update(screen)   
         bomb.update(screen)
         pg.display.update()
         tmr += 1
