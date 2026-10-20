@@ -165,7 +165,8 @@ class Explosion: #課題3
     def update(self, screen):
         self.life -= 1
         if self.life > 0:
-            screen.blit(self.imgs[(self.life // 4) % 2], self.rct)
+            screen.blit(self.imgs[(self.life // 4) %2], self.rct)
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
