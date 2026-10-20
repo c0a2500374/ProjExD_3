@@ -193,6 +193,7 @@ def main():
                 pg.display.update()
                 time.sleep(1)
                 return
+            
         #練習5
         for i, bomb in enumerate(bombs):
             if beam is not None:
@@ -208,12 +209,17 @@ def main():
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
+
+        #演習1 
+        score.update(screen)
+
         if beam is not None: 
             beam.update(screen)
         for bomb in bombs:    
             bomb.update(screen)
         pg.display.update()
-        score.update(screen)
+
+
         tmr += 1
         clock.tick(50)
 
