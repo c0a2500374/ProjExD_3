@@ -110,7 +110,6 @@ class Beam:
             self.rct.move_ip(self.vx, self.vy)
             screen.blit(self.img, self.rct)    
 
-
 class Bomb:
     """
     爆弾に関するクラス
@@ -174,13 +173,11 @@ def main():
     bird = Bird((300, 200))
     #bomb = Bomb((255, 0, 0), 10)
 
-    #練習5
-    bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
-    #課題1
-    score = Score()
+    bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]#練習5
 
-    #課題2
-    multibeams = []
+    score = Score()#課題1
+
+    multibeams = []#課題2
 
     explosions = []
     #beam = None  # ゲーム初期化時にはビームは存在しない（スペースキーが押されたときに生成）
@@ -194,8 +191,8 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
                 #beam = Beam(bird)  
-                # 課題2
-                multibeams.append(Beam(bird))
+                
+                multibeams.append(Beam(bird))# 課題2
 
         screen.blit(bg_img, [0, 0])
 
@@ -203,9 +200,8 @@ def main():
             if bird.rct.colliderect(bomb.rct):
                 # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
                 bird.change_img(8, screen)
-
-                #練習４    
-                fonto = pg.font.Font(None, 80) 
+    
+                fonto = pg.font.Font(None, 80) #練習４
                 txt = fonto.render("Game Over", True, (255, 0, 0))
                 screen.blit(txt, [WIDTH//2-150, HEIGHT//2])
                 
@@ -222,9 +218,9 @@ def main():
         #             #課題1
         #             score.score += 1
         #             bird.change_img(6, screen)
-        #課題2
+        
 
-        for i, bomb in enumerate(bombs):
+        for i, bomb in enumerate(bombs):#課題2
             for j, beam in enumerate(multibeams):
                 if beam is not None and beam.rct.colliderect(bomb.rct):
                     
@@ -246,16 +242,14 @@ def main():
 
         bombs = [bomb for bomb in bombs if bomb is not None]
 
-        #課題3
-        explosions = [explosion for explosion in explosions if explosion.life > 0]
+        explosions = [explosion for explosion in explosions if explosion.life > 0]#課題3
         for explosion in explosions:
             explosion.update(screen)
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-
-        #課題1 
-        score.update(screen)
+ 
+        score.update(screen)#課題
 
         for beam in multibeams:
             beam.update(screen)
